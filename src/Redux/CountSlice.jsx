@@ -1,49 +1,39 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-
 const initialState = {
-  white : JSON.parse(localStorage.getItem("white")) || [], 
+  white: JSON.parse(localStorage.getItem('white')) || [], // Safely parse the localStorage data
 };
 
-
-
-
 const whiteSlice = createSlice({
-  name : 'white', 
-  initialState, 
-  reducers:{
-    addtowhitelist: (state, action) =>{
-      const products = action.payload
-      const existingProducts = state.white.find(items => items._id==products._Id)
+  name: 'white',
+  initialState,
+  reducers: {
+    addtowhitelist: (state, action) => {
+      const product = action.payload;
+      const existingProduct = state.white.find((item) => item._id === product._id);
 
-      if (existingProducts) {
-        existingProducts.quantity += 1;
+      if (existingProduct) {
+        existingProduct.quantity += 1; // Increment quantity if the product exists
       } else {
-        state.white.push({ ...products, quantity: 1 });
+        state.white.push({ ...product, quantity: 1 }); // Add new product with quantity 1
       }
-      localStorage.setItem('white', JSON.stringify(state.white));
+      localStorage.setItem('white', JSON.stringify(state.white)); // Save updated state to localStorage
     },
 
-
-    removeFromWhite : (state, action ) =>{
-      const updatedwhite = state.white.filter(items => items._id !== action.payload._id)
-      state.white = updatedwhite;
-      localStorage.setItem('white', JSON.stringify(state.white ));
+    removeFromWhite: (state, action) => {
+      state.white = state.white.filter((item) => item._id !== action.payload._id); // Remove item
+      localStorage.setItem('white', JSON.stringify(state.white)); // Update localStorage
     },
-
 
     clearwhite: (state) => {
-      state.white = [];
-      localStorage.removeItem('white');
+      state.white = []; // Clear all items
+      localStorage.removeItem('white'); // Remove from localStorage
     },
-
-  }
-})
-
+  },
+});
 
 export const { addtowhitelist, removeFromWhite, clearwhite } = whiteSlice.actions;
 
 export const selectWhite = (state) => state.white.white;
 
 export default whiteSlice.reducer;
-

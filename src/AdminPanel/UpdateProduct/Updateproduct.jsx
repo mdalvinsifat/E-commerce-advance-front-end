@@ -1,37 +1,44 @@
-// src/components/CreateProduct.js
+// src/components/UpdateProduct.js
 import React, { useState } from 'react';
-import { useAddNewProductMutation, useGetAllCategoriesQuery } from '../../Redux/UserSlice';
+import {  useGetAllCategoriesQuery, useUpdateProductMutation } from '../../Redux/UserSlice';
 import AdminNav from '../AdminNav/AdminNav';
 
-const CreateProduct = () => {
-  const [addNewProduct, { isLoading, isSuccess, isError, error }] = useAddNewProductMutation();
+const UpdateProduct = () => {
+  const [updateProduct, { isLoading, isSuccess, isError, error }] = useUpdateProductMutation();
   const { data: categories, isLoading: isCategoriesLoading, isError: isCategoriesError } =
-    useGetAllCategoriesQuery()
+    useGetAllCategoriesQuery();
+
   const [formData, setFormData] = useState({
     image: null,
-    imageOne: null,
-    imageTwo: null,
-    imageThree: null,
-    imageFour: null,
+    additionalImages: [],
     heading: '',
     subHeading: '',
     oldPrice: '',
     price: '',
-    size: '',
-    color: '',
-    gsm: '',
-    fabric: '',
-    sku: [],
-    categories: '',
-    tag: '',
+    category: '',
     description: '',
   });
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+    if (files && files.length) {
+      if (name === 'additionalImages') {
+        setFormData((prev) => ({
+          ...prev,
+          [name]: [...prev.additionalImages, ...files],
+        }));
+      } else {
+        setFormData((prev) => ({ ...prev, [name]: files[0] }));
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleRemoveImage = (index) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: files ? files[0] : value, // Handle files and text inputs dynamically
+      additionalImages: prev.additionalImages.filter((_, i) => i !== index),
     }));
   };
 
@@ -39,14 +46,16 @@ const CreateProduct = () => {
     e.preventDefault();
 
     const formDataToSubmit = new FormData();
-    Object.keys(formData).forEach((key) => {
-      if (formData[key]) {
-        formDataToSubmit.append(key, formData[key]);
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === 'additionalImages') {
+        value.forEach((file, index) => formDataToSubmit.append(`image${index + 1}`, file));
+      } else if (value) {
+        formDataToSubmit.append(key, value);
       }
     });
 
     try {
-      await addNewProduct(formDataToSubmit);
+      await updateProduct(formDataToSubmit);
     } catch (error) {
       console.error(error);
     }
@@ -55,20 +64,21 @@ const CreateProduct = () => {
   const renderImagePreview = (imageFile) => {
     if (!imageFile) return null;
     const objectURL = URL.createObjectURL(imageFile);
-    return <img src={objectURL} alt="Selected" className="w-32 h-32 object-cover rounded-md mt-2" />;
+    return <img src={objectURL} alt="Preview" className="w-32 h-32 object-cover rounded-md mt-2" />;
   };
 
   return (
+    <div className="grid grid-cols-5">
+      <section className="col-span-1">
+        <AdminNav />
+      </section>
+    
 
 
+   
 
 
-<div className='grid grid-cols-5'>
-
-<section className='col-span-1'>
-<AdminNav/>
-</section>
-    <section className='col-span-3'>
+      <section className='col-span-3'>
         <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg mt-10">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Create New Product</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -172,22 +182,21 @@ const CreateProduct = () => {
             <p className="text-red-500">Failed to load categories.</p>
           ) : (
             <select
-            name="categories"
-            value={formData.categories}
-            onChange={handleChange}
-            className="mt-2 w-full p-3 border border-gray-300 rounded-md"
-            required
-          >
-            <option value="" disabled>
-              Select a category
-            </option>
-            {categories?.map((category) => (
-              <option key={category._id} value={category._id}>
-                {category.name}
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="mt-2 w-full p-3 border border-gray-300 rounded-md"
+              required
+            >
+              <option value="" disabled>
+                Select a category
               </option>
-            ))}
-          </select>
-          
+              {categories?.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
           )}
         </div>
 
@@ -294,9 +303,13 @@ const CreateProduct = () => {
       )}
     </div>
     </section>
-</div>
 
+
+    
+
+
+    </div>
   );
 };
 
-export default CreateProduct;
+export default UpdateProduct;

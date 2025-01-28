@@ -21,6 +21,7 @@ export const apiSlice = createApi({
         url: '/product',
         method: 'POST',
         body: newProduct,
+        
       }),
     }),
     addNewCategory: builder.mutation({
@@ -28,6 +29,7 @@ export const apiSlice = createApi({
         url: '/category',
         method: 'POST',
         body: newCategory,
+        
       }),
     }),
     addnewAuthRegister: builder.mutation({
@@ -60,8 +62,8 @@ export const apiSlice = createApi({
     }),
     deleteProduct: builder.mutation({
       query: (id) => ({
-        url: `/product/${id}`,
-        method: 'DELETE',
+          url: `/product/${id}`,
+          method: 'DELETE',
       }),
     }),
     deleteCategory: builder.mutation({
@@ -70,6 +72,12 @@ export const apiSlice = createApi({
         method: 'DELETE',
       }),
     }),
+
+    searchProducts: builder.query({
+      query: (keyword) => `/product/search/${keyword}`,
+    }),
+
+
   }),
 });
 
@@ -82,6 +90,7 @@ export const {
   useAddNewCategoryMutation,
   useAddnewAuthRegisterMutation,
   useAddnewAuthLoginMutation,
+  useSearchProductsQuery,
   useUpdateProductMutation,
   useUpdateCategoryMutation,
   useDeleteProductMutation,

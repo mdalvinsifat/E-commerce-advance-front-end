@@ -1,8 +1,7 @@
 import React from 'react';
 import { useGetAllCategoriesQuery, useGetAllProductsQuery } from '../../Redux/UserSlice';
 import { useDispatch } from 'react-redux';
-
- import { Link } from 'react-router-dom'; // Import Link for navigation
+import { Link } from 'react-router-dom'; // Import Link for navigation
 import Layout from '../../component/Layout/Layout';
 import Slider from 'react-slick';
 import { addToCart } from '../../Redux/CardSlice';
@@ -57,15 +56,22 @@ const Home = () => {
                 .slice(0, 4)
                 .map((product) => (
                   <div key={product._id} className="border rounded-lg p-4 shadow-sm">
-                    <img src={`http://localhost:8080/${product.image.replace('\\', '/')}`} alt={product.description} className="w-full h-48 object-cover mb-4" />
-                    <h3 className="text-lg font-semibold">{product.description}</h3>
+                    <img
+                      src={`http://localhost:8080/${product.image.replace('\\', '/')}`}
+                      alt={product.description}
+                      className="w-full h-48 object-cover mb-4"
+                    />
+                    {/* Use Link for navigation to the product details page */}
+                    <Link to={`/product/${product._id}`}>
+                      <h3 className="text-lg font-semibold hover:underline">{product.heading}</h3>
+                    </Link>
                     <p className="text-gray-500">SKU: {product.sku}</p>
                     <p className="text-blue-600 font-bold">Price: ${product.price}</p>
                     <button
                       className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
                       onClick={() => dispatch(addtowhitelist(product))}
                     >
-                   Add to Whitelist 
+                      Add to Whitelist
                     </button>
                     <button
                       className="mt-2 ml-3 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"

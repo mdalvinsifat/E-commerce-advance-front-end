@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeFromCart, clearCart, selectCart } from "../../Redux/CardSlice";
 import { Link } from 'react-router-dom';
+import Layout from '../../component/Layout/Layout';
 
 const Cart = () => {
   const cartItems = useSelector(selectCart);
@@ -16,7 +17,8 @@ const Cart = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+   <Layout>
+     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Shopping Cart</h2>
       {cartItems.length === 0 ? (
         <p>Your cart is empty. <Link to="/" className="text-blue-600">Start shopping!</Link></p>
@@ -57,6 +59,7 @@ const Cart = () => {
         </>
       )}
     </div>
+   </Layout>
   );
 };
 

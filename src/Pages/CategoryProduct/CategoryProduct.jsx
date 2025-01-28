@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link,  useParams } from "react-router-dom";
 import { useGetAllProductsQuery } from "../../Redux/UserSlice";
 import Layout from "../../component/Layout/Layout";
 
@@ -17,6 +17,7 @@ const CategoryProduct = () => {
         <Layout>
             <div className="container mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-4">Products for Category</h1>
+
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
                     {categoryProducts.map((product) => (
                         <div key={product._id} className="border rounded-lg p-4 shadow-sm">
@@ -25,12 +26,15 @@ const CategoryProduct = () => {
                                 alt={product.description}
                                 className="w-full h-48 object-cover mb-4"
                             />
-                            <h3 className="text-lg font-semibold">{product.description}</h3>
+                    <Link to={`/product/${product._id}`}>
+                                          <h3 className="text-lg font-semibold hover:underline">{product.heading}</h3>
+                                        </Link>
                             <p className="text-gray-500">SKU: {product.sku}</p>
                             <p className="text-blue-600 font-bold">Price: ${product.price}</p>
                         </div>
                     ))}
                 </div>
+
             </div>
         </Layout>
     );

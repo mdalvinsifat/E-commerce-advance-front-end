@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearwhite, removeFromWhite, selectWhite } from '../../Redux/CountSlice';
+import Layout from '../../component/Layout/Layout';
 
 const WishlistPage = () => {
   const whiteItem = useSelector(selectWhite);
@@ -15,7 +16,8 @@ const WishlistPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+   <Layout>
+     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Wishlist</h2>
 
       {whiteItem.length === 0 ? (
@@ -61,6 +63,8 @@ const WishlistPage = () => {
         </>
       )}
     </div>
+    
+   </Layout>
   );
 };
 
